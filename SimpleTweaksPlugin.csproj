@@ -40,6 +40,11 @@
       <Compile Remove="Tweaks\UiAdjustment\LargeCooldownCounter.cs" />
       <Compile Remove="Tweaks\RecommendEquipCommand.cs" />
       <Compile Remove="Tweaks\UiAdjustment\ImprovedWorldVisit.cs" />
+      <None Remove="FFXIVClientStructs.dll" />
+      <None Remove="FFXIVClientStructs.pdb" />
+      <None Update="Serilog.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory> 
+      </None>
      
     </ItemGroup>
     <ItemGroup>
@@ -55,9 +60,8 @@
             <Private>false</Private>
             <HintPath>$(DalamudLibPath)\Dalamud.dll</HintPath>
 		</Reference>
-		<Reference Include="FFXIVClientStructs">
-			<Private>true</Private>
-			<HintPath>$(SolutionDir)\lib\FFXIVClientStructs\bin\$(ConfigurationName)\FFXIVClientStructs.dll</HintPath>
+		<Reference Include="FFXIVClientStructs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+		  <HintPath>FFXIVClientStructs.dll</HintPath>
 		</Reference>
 		<Reference Include="Microsoft.CSharp" />
         <Reference Include="Newtonsoft.Json">
