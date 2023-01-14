@@ -82,10 +82,11 @@ namespace SimpleTweaksPlugin {
         public SimpleTweaksPlugin(DalamudPluginInterface pluginInterface) {
             Plugin = this;
             pluginInterface.Create<Service>();
-#if DEBUG
+#if RedistClientStructs
             FFXIVClientStructs.Interop.Resolver.GetInstance.SetupSearchSpace(Service.SigScanner.SearchBase);
             FFXIVClientStructs.Interop.Resolver.GetInstance.Resolve();
-            
+#endif
+#if DEBUG
             SimpleLog.SetupBuildPath();
 #endif
             this.PluginInterface = pluginInterface;
