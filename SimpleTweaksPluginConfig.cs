@@ -32,6 +32,7 @@ public partial class SimpleTweaksPluginConfig : IPluginConfiguration {
     public bool DisableAutoOpen;
     public bool ShowInDevMenu;
     public bool NoFools;
+    public bool NotBaby;
 
     public bool ShowTweakDescriptions = true;
     public bool ShowTweakIDs;
@@ -293,6 +294,13 @@ public partial class SimpleTweaksPluginConfig : IPluginConfiguration {
                         }
                         ImGui.PopStyleColor(3);
                         ImGui.Separator();
+                        if (!NoFools) {
+                            if (ImGui.Checkbox("Hide the stupid fucking banner", ref NotBaby)) {
+                                if (NotBaby) Fools.Reset();
+                                Save();
+                            }
+                            ImGui.Separator();
+                        }
                     }
 
                     if (ImGui.Checkbox(Loc.Localize("General Options / Show Experimental Tweaks", "Show Experimental Tweaks."), ref ShowExperimentalTweaks)) Save();
