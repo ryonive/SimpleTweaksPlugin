@@ -7,10 +7,9 @@ using System.Linq;
 using System.Reflection;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.Internal;
 using Dalamud.Plugin;
 using ImGuiNET;
-using ImGuiScene;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SimpleTweaksPlugin.Events;
 using SimpleTweaksPlugin.Tweaks.AbstractTweaks;
@@ -27,7 +26,7 @@ public abstract class BaseTweak {
     public virtual bool Enabled { get; protected set; }
 
     private bool hasPreviewImage;
-    private TextureWrap previewImage;
+    private IDalamudTextureWrap previewImage;
     
     public bool IsDisposed { get; private set; }
 
@@ -492,7 +491,7 @@ public abstract class BaseTweak {
         Ready = true;
     }
 
-    private bool signatureHelperInitalized = false;
+    private bool signatureHelperInitialized = false;
 
     private void AutoLoadConfig() {
         SimpleLog.Verbose($"[{Key}] AutoLoading Config");
@@ -525,9 +524,9 @@ public abstract class BaseTweak {
     
     
     internal void InternalEnable() {
-        if (!signatureHelperInitalized) {
+        if (!signatureHelperInitialized) {
             SignatureHelper.Initialise(this);
-            signatureHelperInitalized = true;
+            signatureHelperInitialized = true;
         }
         
         // Auto Load Config
@@ -640,6 +639,31 @@ public abstract class BaseTweak {
             if (tweakAutoConfigAttribute != null) return tweakAutoConfigAttribute;
             tweakAutoConfigAttribute = GetType().GetCustomAttribute<TweakAutoConfigAttribute>() ?? NoAutoConfig.Singleton;
             return tweakAutoConfigAttribute;
+        }
+    }
+
+    private HashSet<string> categories;
+    public HashSet<string> Categories {
+        get {
+            if (categories != null) return categories;
+
+            void HandleAttributes(IEnumerable<TweakCategoryAttribute> attributes) {
+                categories = new HashSet<string>();
+                foreach (var attr in attributes) {
+                    foreach (var v in attr.Categories) {
+                        categories.Add(v);
+                    }
+                }
+            }
+            
+            HandleAttributes(GetType().GetCustomAttributes<TweakCategoryAttribute>(true));
+            foreach (var i in GetType().GetInterfaces()) {
+                HandleAttributes(i.GetCustomAttributes<TweakCategoryAttribute>(true));
+            }
+
+            if (Experimental) categories.Add($"{TweakCategory.Experimental}");
+            
+            return categories;
         }
     }
     #endregion

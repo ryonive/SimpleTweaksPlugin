@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dalamud.Game.Command;
-using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using ImGuiNET;
 using SimpleTweaksPlugin.TweakSystem;
 
 namespace SimpleTweaksPlugin.Tweaks.AbstractTweaks; 
 
+[TweakCategory(TweakCategory.Command)]
 public abstract class CommandTweak : Tweak {
     protected abstract string Command { get; }
     protected virtual string[] Alias => Array.Empty<string>();

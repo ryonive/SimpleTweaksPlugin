@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Interface;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -76,21 +75,21 @@ public unsafe class ParameterBarAdjustments : UiAdjustments.SubTweak {
         }
 
         Config = LoadConfig<Configs>() ?? new Configs();
-        Service.Framework.Update += OnFrameworkUpdate;
+        Common.FrameworkUpdate += OnFrameworkUpdate;
         Service.ClientState.TerritoryChanged += OnTerritoryChanged;
-        OnTerritoryChanged(null, Service.ClientState.TerritoryType);
+        OnTerritoryChanged(Service.ClientState.TerritoryType);
         base.Enable();
     }
 
     protected override void Disable() {
-        Service.Framework.Update -= OnFrameworkUpdate;
+        Common.FrameworkUpdate -= OnFrameworkUpdate;
         Service.ClientState.TerritoryChanged -= OnTerritoryChanged;
         UpdateParameterBar(true);
         SaveConfig(Config);
         base.Disable();
     }
 
-    private void OnFrameworkUpdate(Framework framework) {
+    private void OnFrameworkUpdate() {
         try {
             UpdateParameterBar();
         }
@@ -99,7 +98,7 @@ public unsafe class ParameterBarAdjustments : UiAdjustments.SubTweak {
         }
     }
     
-    private void OnTerritoryChanged(object? sender, ushort territoryType) {
+    private void OnTerritoryChanged(ushort territoryType) {
         var territory = Service.Data.Excel.GetSheet<TerritoryType>()?.GetRow(territoryType);
         if (territory == null) return;
         inPVP = territory.IsPvpZone;
@@ -188,9 +187,9 @@ public unsafe class ParameterBarAdjustments : UiAdjustments.SubTweak {
         textureNode->Color.A = hideMp || barConfig.Hide ? Byte00 : ByteFF;
         textureNode2->Color.A = hideMp || barConfig.Hide ? Byte00 : ByteFF;
 
-        gridNode3->AddRed = (ushort)(barColor.X * ColorMultiplier);
-        gridNode3->AddGreen = (ushort)(barColor.Y * ColorMultiplier);
-        gridNode3->AddBlue = (ushort)(barColor.Z * ColorMultiplier);
+        gridNode3->AddRed = (short)(barColor.X * ColorMultiplier);
+        gridNode3->AddGreen = (short)(barColor.Y * ColorMultiplier);
+        gridNode3->AddBlue = (short)(barColor.Z * ColorMultiplier);
     }
 
     private void UpdateParameterBar(bool reset = false) {

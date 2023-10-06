@@ -2,15 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dalamud.Hooking;
-using Dalamud.Logging;
-using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.Exd;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
+using SimpleTweaksPlugin.Events;
 using SimpleTweaksPlugin.TweakSystem;
 using SimpleTweaksPlugin.Utility;
 
@@ -22,14 +20,7 @@ public unsafe class LootWindowDuplicateUniqueItemIndicator : UiAdjustments.SubTw
     protected override string Author => "MidoriKami";
     public override string Description => "Marks unobtainable and already unlocked items in the loot window.";
     public override uint Version => 2;
-
-    private delegate nint OnRequestedUpdateDelegate(nint a1, nint a2, nint a3);
     
-    [Signature("40 53 48 83 EC 20 48 8B 42 58", DetourName = nameof(OnNeedGreedRequestedUpdate))]
-    private readonly Hook<OnRequestedUpdateDelegate>? needGreedOnRequestedUpdateHook = null!;
-
-    private static AtkUnitBase* AddonNeedGreed => (AtkUnitBase*) Service.GameGui.GetAddonByName("NeedGreed");
-
     private readonly int[] listItemNodeIdArray = Enumerable.Range(21001, 31).Prepend(2).ToArray();
 
     private const uint CrossBaseId = 1000U;
@@ -74,34 +65,18 @@ public unsafe class LootWindowDuplicateUniqueItemIndicator : UiAdjustments.SubTw
     protected override void Enable()
     {
         TweakConfig = LoadConfig<Config>() ?? new Config();
-        
-        needGreedOnRequestedUpdateHook?.Enable();
-        Common.AddonSetup += OnAddonSetup;
-        Common.AddonFinalize += OnAddonFinalize;
-        base.Enable();
     }
 
     protected override void Disable()
     {
         SaveConfig(TweakConfig);
-        
-        needGreedOnRequestedUpdateHook?.Disable();
-        Common.AddonSetup -= OnAddonSetup;
-        Common.AddonFinalize -= OnAddonFinalize;
-        base.Disable();
     }
 
-    public override void Dispose()
+    [AddonPostSetup("NeedGreed")]
+    private void OnAddonSetup(AtkUnitBase* addon)
     {
-        needGreedOnRequestedUpdateHook?.Dispose();
-        base.Dispose();
-    }
 
-    private void OnAddonSetup(SetupAddonArgs obj)
-    {
-        if (obj.AddonName != "NeedGreed") return;
-        
-        var listComponentNode = (AtkComponentNode*) obj.Addon->GetNodeById(6);
+        var listComponentNode = (AtkComponentNode*) addon->GetNodeById(6);
         if (listComponentNode is null || listComponentNode->Component is null) return;
         
         foreach (uint index in listItemNodeIdArray)
@@ -125,11 +100,10 @@ public unsafe class LootWindowDuplicateUniqueItemIndicator : UiAdjustments.SubTw
         }
     }
     
-    private void OnAddonFinalize(SetupAddonArgs obj)
+    [AddonFinalize("NeedGreed")]
+    private void OnAddonFinalize(AtkUnitBase* addon)
     {
-        if (obj.AddonName != "NeedGreed") return;
-        
-        var listComponentNode = (AtkComponentNode*) obj.Addon->GetNodeById(6);
+        var listComponentNode = (AtkComponentNode*) addon->GetNodeById(6);
         if (listComponentNode is null || listComponentNode->Component is null) return;
         
         foreach (uint index in listItemNodeIdArray)
@@ -138,31 +112,30 @@ public unsafe class LootWindowDuplicateUniqueItemIndicator : UiAdjustments.SubTw
                     
             var lootItemNode = Common.GetNodeByID<AtkComponentNode>(componentUldManager, index);
             if (lootItemNode is null) continue;
-            
-            var crossNode = Common.GetNodeByID<AtkImageNode>(componentUldManager, CrossBaseId + index);
+
+            var lootItemUldManager = &lootItemNode->Component->UldManager;
+
+            var crossNode = Common.GetNodeByID<AtkImageNode>(lootItemUldManager, CrossBaseId + index);
             if (crossNode is not null)
             {
-                UiHelper.UnlinkAndFreeImageNode(crossNode, AddonNeedGreed);
+                UiHelper.UnlinkAndFreeImageNode(crossNode, addon);
             }
                         
-            var padlockNode = Common.GetNodeByID<AtkImageNode>(componentUldManager, PadlockBaseId + index);
+            var padlockNode = Common.GetNodeByID<AtkImageNode>(lootItemUldManager, PadlockBaseId + index);
             if (padlockNode is not null)
             {
-                UiHelper.UnlinkAndFreeImageNode(padlockNode, AddonNeedGreed);
+                UiHelper.UnlinkAndFreeImageNode(padlockNode, addon);
             }
         }
     }
 
-    private nint OnNeedGreedRequestedUpdate(nint addon, nint a2, nint a3)
+    [AddonPostRequestedUpdate("NeedGreed")]
+    private void OnNeedGreedRequestedUpdate(AddonNeedGreed* callingAddon)
     {
-        var result = needGreedOnRequestedUpdateHook!.Original(addon, a2, a3);
-
         try
         {
-            var callingAddon = (AddonNeedGreed*) addon;
-
             var listComponentNode = (AtkComponentNode*) callingAddon->AtkUnitBase.GetNodeById(6);
-            if (listComponentNode is null || listComponentNode->Component is null) return result;
+            if (listComponentNode is null || listComponentNode->Component is null) return;
             
             // For each possible item slot, get the item info
             foreach (var index in Enumerable.Range(0, callingAddon->ItemsSpan.Length))
@@ -207,10 +180,9 @@ public unsafe class LootWindowDuplicateUniqueItemIndicator : UiAdjustments.SubTw
         }
         catch (Exception e)
         {
-            PluginLog.Error(e, "Something went wrong in LootWindowDuplicateUniqueItemIndicator, let MidoriKami know!");
+            SimpleLog.Error(e, "Something went wrong in LootWindowDuplicateUniqueItemIndicator, let MidoriKami know!");
         }
-
-        return result;
+        
     }
 
     private void UpdateNodeVisibility(AtkComponentNode* listItemNode, int listItemId, ItemStatus status)

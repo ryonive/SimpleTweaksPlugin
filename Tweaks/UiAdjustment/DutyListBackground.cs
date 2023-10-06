@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using SimpleTweaksPlugin.Events;
@@ -14,7 +14,7 @@ namespace SimpleTweaksPlugin.Tweaks.UiAdjustment;
 [TweakReleaseVersion("1.8.7.0")]
 [Changelog("1.8.7.1", "Improved tweak stability.")]
 [Changelog("1.8.7.3", "Prevent crash when using Aestetician.")]
-[Changelog(UnreleasedVersion, "Reimplemented with a new method to avoid crashes.")]
+[Changelog("1.9.0.0", "Reimplemented with a new method to avoid crashes.")]
 public unsafe class DutyListBackground : UiAdjustments.SubTweak {
     public Config TweakConfig { get; private set; } = null!;
 
@@ -28,7 +28,7 @@ public unsafe class DutyListBackground : UiAdjustments.SubTweak {
         if (Common.GetUnitBase("NamePlate", out var unitBase)) OnAddonFinalize(unitBase);
     }
 
-    [AddonSetup("NamePlate")]
+    [AddonPostSetup("NamePlate")]
     private void OnAddonSetup(AtkUnitBase* unitBase) {
         if (unitBase == null || unitBase->RootNode == null) return;
         var imageNode = UiHelper.MakeImageNode(CustomNodes.Get(nameof(DutyListBackground)), new UiHelper.PartInfo(0, 0, 0, 0));
@@ -64,8 +64,8 @@ public unsafe class DutyListBackground : UiAdjustments.SubTweak {
                 }
 
                 imageNode->AtkResNode.ToggleVisibility(unitBase->IsVisible && unitBase->RootNode->IsVisible && (unitBase->VisibilityFlags & 1) == 0);
-                imageNode->AtkResNode.SetWidth(unitBase->RootNode->GetWidth());
-                imageNode->AtkResNode.SetHeight(unitBase->RootNode->GetHeight());
+                imageNode->AtkResNode.SetWidth((ushort)unitBase->GetScaledWidth(true));
+                imageNode->AtkResNode.SetHeight((ushort)unitBase->GetScaledHeight(true));
                 imageNode->AtkResNode.SetPositionFloat(unitBase->X, unitBase->Y);
                 imageNode->AtkResNode.Color.A = (byte)(TweakConfig.BackgroundColor.W * 255);
                 imageNode->AtkResNode.AddRed = (byte)(TweakConfig.BackgroundColor.X * 255);

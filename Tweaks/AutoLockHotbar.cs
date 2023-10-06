@@ -1,5 +1,4 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Hooking;
 using SimpleTweaksPlugin.TweakSystem;
 using SimpleTweaksPlugin.Utility;
 
@@ -32,7 +31,7 @@ public unsafe class AutoLockHotbar : Tweak {
         if (Config.CombatStart && flag == ConditionFlag.InCombat && value) SetLock(true);
     }
 
-    private void OnTerritoryChanged(object? sender, ushort _) {
+    private void OnTerritoryChanged(ushort _) {
         if (Config.ZoneChange) SetLock(true);
     }
 

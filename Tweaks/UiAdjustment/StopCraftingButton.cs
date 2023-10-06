@@ -5,11 +5,11 @@ using Dalamud.Game.Command;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
+using SimpleTweaksPlugin.Events;
 using SimpleTweaksPlugin.Utility;
 
 namespace SimpleTweaksPlugin.Tweaks.UiAdjustment; 
@@ -71,17 +71,12 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
 
     }
 
-    private HookWrapper<Common.AddonOnUpdate> craftingLogUpdateHook;
-    
     public override void Setup() {
         AddChangelog("1.8.2.1", "Fixed a potential crash in specific circumstances.");
         base.Setup();
     }
 
     protected override void Enable() {
-        craftingLogUpdateHook ??= Common.HookAfterAddonUpdate("40 55 57 41 54 41 55 41 57 48 8D AC 24", CraftingLogUpdated);
-        craftingLogUpdateHook?.Enable();
-
         clickSysnthesisButtonHook ??= Common.Hook<ClickSynthesisButton>("E9 ?? ?? ?? ?? 4C 8B 44 24 ?? 49 8B D2 48 8B CB 48 83 C4 30 5B E9 ?? ?? ?? ?? 4C 8B 44 24 ?? 49 8B D2 48 8B CB 48 83 C4 30 5B E9 ?? ?? ?? ?? 33 D2", ClickSynthesisButtonDetour);
         clickSysnthesisButtonHook?.Enable();
 
@@ -97,10 +92,10 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
                 if (addon != null) {
                     GetCraftReadyState(out var selectedRecipeId);
                     if (selectedRecipeId > 0 && localPlayer->EventState == 5) {
-                        addon->Hide(true);
+                        addon->Hide(true, false, 0);
                         AgentRecipeNote.Instance()->OpenRecipeByRecipeIdInternal((uint)(0x10000 + selectedRecipeId));
                         standingUp = true;
-                        Service.Framework.Update += ForceUpdateFramework;
+                        Common.FrameworkUpdate += ForceUpdateFramework;
                         return;
                     }
                 }
@@ -123,8 +118,7 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
     private void ForceUpdate() {
         try {
             var addon = Common.GetUnitBase("RecipeNote");
-            var atkArrayDataHolder = Framework.Instance()->GetUiModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder;
-            if (addon != null) CraftingLogUpdated(addon, atkArrayDataHolder.NumberArrays, atkArrayDataHolder.StringArrays);
+            if (addon != null) CraftingLogUpdated(addon);
         } catch (Exception ex) {
             SimpleLog.Error(ex);
         }
@@ -133,7 +127,7 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
     private byte? GetGearsetForClassJob(uint cjId) {
         var gearsetModule = RaptureGearsetModule.Instance();
         for (var i = 0; i < 100; i++) {
-            var gearset = gearsetModule->Gearset[i];
+            var gearset = gearsetModule->GetGearset(i);
             if (gearset == null) continue;
             if (!gearset->Flags.HasFlag(RaptureGearsetModule.GearsetFlag.Exists)) continue;
             if (gearset->ID != i) continue;
@@ -153,11 +147,11 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
                     if (Service.ClientState.LocalPlayer != null && !standingUp) {
                         var addon = Common.GetUnitBase("RecipeNote");
                         if (addon != null) {
-                            addon->Hide(true);
+                            addon->Hide(true, true, 0);
                             AgentRecipeNote.Instance()->OpenRecipeByRecipeIdInternal((uint) (0x10000 + selectedRecipeId));
                             removeFrameworkUpdateEventStopwatch.Restart();
                             standingUp = true;
-                            Service.Framework.Update += ForceUpdateFramework;
+                            Common.FrameworkUpdate += ForceUpdateFramework;
                             return null;
                         }
                     } else {
@@ -185,8 +179,8 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
         return clickSysnthesisButtonHook.Original(a1, a2);
     }
 
-    private void ForceUpdateFramework(Dalamud.Game.Framework framework) {
-        if (removeFrameworkUpdateEventStopwatch.ElapsedMilliseconds > 5000) framework.Update -= ForceUpdateFramework;
+    private void ForceUpdateFramework() {
+        if (removeFrameworkUpdateEventStopwatch.ElapsedMilliseconds > 5000) Common.FrameworkUpdate -= ForceUpdateFramework;
         ForceUpdate();
         if (standingUp == false || Service.ClientState.LocalPlayer == null) return;
         var localPlayer = (Character*) Service.ClientState.LocalPlayer.Address;
@@ -224,8 +218,8 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
         return localPlayer->EventState == 5 ? CraftReadyState.AlreadyCrafting : CraftReadyState.WrongClass;
     }
     
-
-    private void CraftingLogUpdated(AtkUnitBase* atkUnitBase, NumberArrayData** numberArrayData, StringArrayData** stringArrayData) {
+    [AddonPostRequestedUpdate("RecipeNote")]
+    private void CraftingLogUpdated(AtkUnitBase* atkUnitBase) {
         var ready = GetCraftReadyState(out _);
         if (ready == CraftReadyState.NotReady) return;
         var craftButton = (AtkComponentNode*) atkUnitBase->GetNodeById(104);
@@ -248,12 +242,11 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
     private void CloseCraftingLog() {
         var rl = Common.GetUnitBase("RecipeNote");
         if (rl == null) return;
-        rl->Hide(true);
+        rl->Hide(true, false, 0);
     }
 
     protected override void Disable() {
         Service.Commands.RemoveHandler("/stopcrafting");
-        craftingLogUpdateHook?.Disable();
         clickSysnthesisButtonHook?.Disable();
         CloseCraftingLog();
         cancelCraftingHook?.Disable();
@@ -261,7 +254,6 @@ public unsafe class StopCraftingButton : UiAdjustments.SubTweak {
     }
 
     public override void Dispose() {
-        craftingLogUpdateHook?.Dispose();
         clickSysnthesisButtonHook?.Dispose();
         cancelCraftingHook?.Dispose();
         base.Dispose();

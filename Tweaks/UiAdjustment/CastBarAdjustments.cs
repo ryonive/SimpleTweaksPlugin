@@ -262,7 +262,7 @@ public unsafe class CastBarAdjustments : UiAdjustments.SubTweak {
                 slideMarker->AtkResNode.MultiplyBlue = (byte) (255 * c.Z);
                 slideMarker->AtkResNode.Color.A = (byte) (255 * c.W);
                 slideMarker->PartID = 0;
-                slideMarker->AtkResNode.Flags_2 |= 1;
+                slideMarker->AtkResNode.DrawFlags |= 1;
             }
             
         } else if (Config.SlideCast && Config.ClassicSlideCast) {

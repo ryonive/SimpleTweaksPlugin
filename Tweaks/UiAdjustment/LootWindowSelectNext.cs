@@ -1,12 +1,11 @@
 #nullable enable
 using System;
 using System.Linq;
-using Dalamud.Hooking;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using SimpleTweaksPlugin.Events;
 using SimpleTweaksPlugin.TweakSystem;
+using SimpleTweaksPlugin.Utility;
 
 namespace SimpleTweaksPlugin.Tweaks.UiAdjustment;
 
@@ -18,14 +17,14 @@ public unsafe class LootWindowSelectNext : UiAdjustments.SubTweak
 {
     private delegate void NeedGreedReceiveEventDelegate(AddonNeedGreed* addon, AtkEventType type, ButtonType buttonType, AtkEvent* eventInfo, nint data);
 
-    private Hook<NeedGreedReceiveEventDelegate>? needGreedReceiveEventHook;
+    private HookWrapper<NeedGreedReceiveEventDelegate>? needGreedReceiveEventHook;
 
-    [AddonSetup("NeedGreed")]
+    [AddonPostSetup("NeedGreed")]
     private void AddonSetup(AtkUnitBase* atkUnitBase)
     {
         if (atkUnitBase is null) return;
         
-        needGreedReceiveEventHook ??= Hook<NeedGreedReceiveEventDelegate>.FromAddress((nint) atkUnitBase->AtkEventListener.vfunc[2], OnNeedGreedReceiveEvent);
+        needGreedReceiveEventHook ??= Common.Hook<NeedGreedReceiveEventDelegate>((nint) atkUnitBase->AtkEventListener.vfunc[2], OnNeedGreedReceiveEvent);
         needGreedReceiveEventHook?.Enable();
 
         // Find first item that hasn't been rolled on, and select it.
@@ -82,7 +81,7 @@ public unsafe class LootWindowSelectNext : UiAdjustments.SubTweak
         }
         catch (Exception exception)
         {
-            PluginLog.Error(exception, "Something went wrong in 'Loot Window Select Next Item', let MidoriKami know.");
+            SimpleLog.Error(exception, "Something went wrong in 'Loot Window Select Next Item', let MidoriKami know.");
         }
     }
 

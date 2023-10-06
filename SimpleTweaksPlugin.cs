@@ -11,9 +11,9 @@ using System.Numerics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Dalamud;
-using Dalamud.Game;
 using Dalamud.Interface.Internal.Notifications;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using SimpleTweaksPlugin.TweakSystem;
 using SimpleTweaksPlugin.Debugging;
 using SimpleTweaksPlugin.Utility;
@@ -90,6 +90,8 @@ namespace SimpleTweaksPlugin {
         public SimpleTweaksPlugin(DalamudPluginInterface pluginInterface) {
             Plugin = this;
             pluginInterface.Create<Service>();
+            pluginInterface.Create<SimpleLog>();
+            pluginInterface.Create<Common>();
             
             this.PluginConfig = (SimpleTweaksPluginConfig)Service.PluginInterface.GetPluginConfig() ?? new SimpleTweaksPluginConfig();
             this.PluginConfig.Init(this);
@@ -100,12 +102,12 @@ namespace SimpleTweaksPlugin {
                 FFXIVClientStructs.Interop.Resolver.GetInstance.SetupSearchSpace(Service.SigScanner.SearchBase);
                 FFXIVClientStructs.Interop.Resolver.GetInstance.Resolve();
                 UpdateBlacklist();
-                Service.Framework.RunOnFrameworkThread(Initalize);
+                Service.Framework.RunOnFrameworkThread(Initialize);
             });
 #else
             Task.Run(() => {
                 UpdateBlacklist();
-                Service.Framework.RunOnFrameworkThread(Initalize);
+                Service.Framework.RunOnFrameworkThread(Initialize);
             });
 #endif
         }
@@ -133,7 +135,7 @@ namespace SimpleTweaksPlugin {
             }
         }
         
-        private void Initalize() {
+        private void Initialize() {
 
             IconManager = new IconManager();
 
@@ -177,7 +179,7 @@ namespace SimpleTweaksPlugin {
         }
         
 
-        private void FrameworkOnUpdate(Framework framework) => Common.InvokeFrameworkUpdate();
+        private void FrameworkOnUpdate(IFramework framework) => Common.InvokeFrameworkUpdate();
 
         public void SetupLocalization() {
             this.PluginConfig.Language ??= Service.ClientState.ClientLanguage switch {
