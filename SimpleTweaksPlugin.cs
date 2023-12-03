@@ -161,7 +161,7 @@ namespace SimpleTweaksPlugin {
             simpleTweakProvider.LoadTweaks();
             TweakProviders.Add(simpleTweakProvider);
 
-            foreach (var provider in PluginConfig.CustomProviders) {
+            foreach (var provider in PluginConfig.CustomTweakProviders) {
                 LoadCustomProvider(provider);
             }
 
@@ -176,6 +176,8 @@ namespace SimpleTweaksPlugin {
 
 
             Service.Framework.Update += FrameworkOnUpdate;
+            
+            MetricsService.ReportMetrics();
         }
         
 
@@ -359,6 +361,7 @@ namespace SimpleTweaksPlugin {
         
 
         public void SaveAllConfig() {
+            PluginConfig.Save();
             foreach (var tp in TweakProviders.Where(tp => !tp.IsDisposed)) {
                 foreach (var t in tp.Tweaks) {
                     t.RequestSaveConfig();
@@ -542,11 +545,12 @@ namespace SimpleTweaksPlugin {
             }
         }
 
-        public void LoadCustomProvider(string path) {
-            if (path.StartsWith("!")) return;
+        public void LoadCustomProvider(CustomTweakProviderConfig provider) {
+            if (!provider.Enabled) return;
+            var path = provider.Assembly;
             if (!File.Exists(path)) return;
             TweakProviders.RemoveAll(t => t.IsDisposed);
-            var tweakProvider = new CustomTweakProvider(path);
+            var tweakProvider = new CustomTweakProvider(provider);
             tweakProvider.LoadTweaks();
             TweakProviders.Add(tweakProvider);
             Loc.ClearCache();

@@ -1,5 +1,81 @@
 # Changelog
 
+## 1.9.3.0
+***General Changes***
+- Added optional metrics collection
+	 - Everyone will be given a chance to opt in or our to the collection of a list of enabled tweaks when first accessing the simple tweaks config window.
+	 - Anyone who preemptivly opted out will not see the notice as they already made the choice.
+	 - No information will be collected until the 'Allow collection' button is pressed.
+
+***New Tweaks***
+- **`Casting Text Visibility`** - Change the font size, color, and background of the casting text. *(img)*
+
+- **`Chat Sounds Everywhere`** - Enables <se.#> chat sounds everywhere, regardless of channel. *(Asriel)*
+
+- **`Duty Timer`** - When completing a duty, tells you how much time the duty took. *(MidoriKami)*
+
+- **`Emote Log Status in Server Bar`** - Show the emote log status in the server bar. *(Sythiri)*
+
+- **`Show Glamour in Item Name`** - Displays the glamoured item name underneath the real item name. *(Enriath)*
+
+
+***Tweak Changes***
+- **`Track Faded Orchestrion Rolls`** - Added tracking for faded rolls with multiple crafts. *(KazWolfe)*
+
+
+## 1.9.2.2
+***Tweak Changes***
+- **`Fast Item Search`** - Fix random ordering (results are now always in the same order)
+
+
+## 1.9.2.1
+***Tweak Changes***
+- **`Always Yes`** - Added support for Blunderville exit dialog.
+
+- **`Target Castbar Countdown`** - Fix updating slowly for really slow castbars
+
+
+## 1.9.2.0
+***New Tweaks***
+- **`Alt + F4 Exit Game`** - Pressing Alt + F4 will cause the game to close safely. *(MidoriKami)*
+
+- **`Fast Item Search`** - Enable superfast searches for the market board & crafting log. *(Asriel)*
+
+- **`Hide 'Character not found' Message`** - Prevent the game from displaying the "The character you last logged out with could not be found on the current data center." message.
+
+- **`Use Custom Time for Furniture Clocks`** - Changes the time displayed on chronometer furniture.
+
+
+***Tweak Changes***
+- **`Fade Unavailable Actions`** - Added option to make skills that are out of range red
+
+
+## 1.9.1.1
+***Tweak Changes***
+- **`Duplicate Keybind Hints Between Hotbars`** - Fixed flickering while cooldown is active.
+
+- **`Remember Selected World`** - Now uses a more reliable method for selecting worlds.
+
+- **`Remove Quest Marker Limit`** - Fix tweak not working since API 9
+
+
+## 1.9.1.0
+***New Tweaks***
+- **`Remember Selected World`** - Remembers which world was selected for each datacentre.
+
+
+***Tweak Changes***
+- **`Adjust Equipment Positions`** - Further improved gamepad navigation on Character window.
+
+- **`Duplicate Action Presses Between Hotbars`** - Fixed crashes and re-enabled tweak.
+
+- **`Duplicate Keybind Hints Between Hotbars`** - Rewritten & re-enabled
+
+- **`Improved Crafting Log`**
+  - Made attempt to fix some issues
+  - Tweak has been disabled for everyone and marked as experimental.
+
+
 ## 1.9.0.0
 ***General Changes***
 - Tweaks that add commands can now have their commands customized.

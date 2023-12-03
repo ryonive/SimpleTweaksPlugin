@@ -8,6 +8,7 @@ using System.Reflection;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Internal;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Newtonsoft.Json;
@@ -24,6 +25,7 @@ public abstract class BaseTweak {
 
     public virtual bool Ready { get; protected set; }
     public virtual bool Enabled { get; protected set; }
+    protected virtual bool Unloading { get; private set; } = true;
 
     private bool hasPreviewImage;
     private IDalamudTextureWrap previewImage;
@@ -214,7 +216,7 @@ public abstract class BaseTweak {
         var shouldForceOpenConfig = ForceOpenConfig;
         ForceOpenConfig = false;
         var configTreeOpen = false;
-        if ((this is CommandTweak || UseAutoConfig || DrawConfigTree != null) && Enabled) {
+        if ((this is CommandTweak || UseAutoConfig || DrawConfigTree != null) && (Enabled || this is CommandTweak)) {
             var x = ImGui.GetCursorPosX();
             if (shouldForceOpenConfig) ImGui.SetNextItemOpen(true);
             if (ImGui.TreeNode($"{LocalizedName}##treeConfig_{GetType().Name}")) {
@@ -222,12 +224,11 @@ public abstract class BaseTweak {
                 DrawCommon();
                 ImGui.SetCursorPosX(x);
                 ImGui.BeginGroup();
-                if (UseAutoConfig) {
-                    DrawAutoConfig(ref hasChanged);
-                }
-
-                DrawConfigTree?.Invoke(ref hasChanged);
+                if (Enabled && UseAutoConfig) DrawAutoConfig(ref hasChanged);
+                if (Enabled) DrawConfigTree?.Invoke(ref hasChanged);
                 if (this is CommandTweak ct) {
+                    if (Enabled && (UseAutoConfig || DrawConfigTree != null)) ImGui.Text("Customize Commands:");
+                    using var _ = ImRaii.PushIndent(condition: Enabled && (UseAutoConfig || DrawConfigTree != null));
                     ct.DrawCommandEditor(false);
                 }
 
@@ -255,7 +256,7 @@ public abstract class BaseTweak {
 
     private void DrawAutoConfig(ref bool hasChanged) {
         try {
-            var configProperty = this.GetType().GetProperties().FirstOrDefault(p => p.PropertyType.IsSubclassOf(typeof(TweakConfig)));
+            var configProperty = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).FirstOrDefault(p => p.PropertyType.IsSubclassOf(typeof(TweakConfig)));
             if (configProperty == null) {
                 ImGui.Text("No Config Property Found");
                 return;
@@ -302,7 +303,7 @@ public abstract class BaseTweak {
                     }
                 } else if (f.FieldType == typeof(int)) {
                     var v = (int) f.GetValue(configObj);
-                    ImGui.SetNextItemWidth(attr.EditorSize == -1 ? -1 : attr.EditorSize * ImGui.GetIO().FontGlobalScale);
+                    if (attr.EditorSize != null) ImGui.SetNextItemWidth(attr.EditorSize == -1 ? -1 : attr.EditorSize * ImGui.GetIO().FontGlobalScale);
                     var e = attr.IntType switch {
                         TweakConfigOptionAttribute.IntEditType.Slider => ImGui.SliderInt($"{localizedName}##{f.Name}_{this.GetType().Name}_{configOptionIndex++}", ref v, attr.IntMin, attr.IntMax),
                         TweakConfigOptionAttribute.IntEditType.Drag => ImGui.DragInt($"{localizedName}##{f.Name}_{this.GetType().Name}_{configOptionIndex++}", ref v, 1f, attr.IntMin, attr.IntMax),
@@ -323,8 +324,25 @@ public abstract class BaseTweak {
                         f.SetValue(configObj, v);
                         hasChanged = true;
                     }
-                }
-                else {
+                } else if (f.FieldType.IsEnum) {
+                    var v = (Enum)f.GetValue(configObj);
+
+                    if (attr.EditorSize != int.MinValue) ImGui.SetNextItemWidth(attr.EditorSize == -1 ? -1 : attr.EditorSize * ImGui.GetIO().FontGlobalScale);
+                    
+                    if (ImGui.BeginCombo($"{localizedName}##{f.Name}_{this.GetType().Namespace}_{configOptionIndex++}", $"{v.GetDescription()}")) {
+                        foreach (var eV in f.FieldType.GetEnumValues()) {
+                            if (eV is not Enum enumValue) {
+                                ImGui.Selectable($"???{eV}");
+                                continue;
+                            }
+                            if (ImGui.Selectable($"{enumValue.GetDescription()}", v.Equals(enumValue))) {
+                                f.SetValue(configObj, enumValue);
+                            }
+                        }
+
+                        ImGui.EndCombo();
+                    }
+                } else {
                     ImGui.Text($"Invalid Auto Field Type: {f.Name}");
                 }
 
@@ -495,7 +513,7 @@ public abstract class BaseTweak {
 
     private void AutoLoadConfig() {
         SimpleLog.Verbose($"[{Key}] AutoLoading Config");
-        var configProperty = GetType().GetProperties().FirstOrDefault(p => p.PropertyType.IsSubclassOf(typeof(TweakConfig)));
+        var configProperty = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).FirstOrDefault(p => p.PropertyType.IsSubclassOf(typeof(TweakConfig)));
         if (configProperty == null) {
             SimpleLog.Error("Failed to AutoLoad config. No TweakConfig property found.");
             return;
@@ -512,7 +530,7 @@ public abstract class BaseTweak {
 
     private void AutoSaveConfig() {
         SimpleLog.Verbose($"[{Key}] AutoSaving Config");
-        var configProperty = GetType().GetProperties().FirstOrDefault(p => p.PropertyType.IsSubclassOf(typeof(TweakConfig)));
+        var configProperty = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).FirstOrDefault(p => p.PropertyType.IsSubclassOf(typeof(TweakConfig)));
         if (configProperty == null) {
             SimpleLog.Error("Failed to AutoSave config. No TweakConfig property found.");
             return;
@@ -524,6 +542,7 @@ public abstract class BaseTweak {
     
     
     internal void InternalEnable() {
+        Unloading = false;
         if (!signatureHelperInitialized) {
             SignatureHelper.Initialise(this);
             signatureHelperInitialized = true;
@@ -553,6 +572,7 @@ public abstract class BaseTweak {
     }
 
     internal void InternalDisable() {
+        Unloading = true;
         Disable();
         EventController.UnregisterEvents(this);
 
