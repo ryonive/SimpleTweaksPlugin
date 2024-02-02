@@ -22,8 +22,9 @@ namespace SimpleTweaksPlugin.Tweaks.UiAdjustment;
 [Changelog("1.8.3.1", "Add TopRight option for displaying countdown")]
 [Changelog("1.8.9.0", "Add option to disable on primary target")]
 [Changelog("1.9.2.1", "Fix updating slowly for really slow castbars")]
-[Changelog(UnreleasedVersion, "Added option to change font size")]
-[Changelog(UnreleasedVersion, "Added option to adjust position")]
+[Changelog("1.9.6.0", "Added option to change font size")]
+[Changelog("1.9.6.0", "Added option to adjust position")]
+[Changelog("1.9.6.0", "Fixed disable on primary and focus target")]
 public unsafe class TargetCastbarCountdown : UiAdjustments.SubTweak {
     private uint CastBarTextNodeId => CustomNodes.Get(this, "Countdown");
 
@@ -54,8 +55,8 @@ public unsafe class TargetCastbarCountdown : UiAdjustments.SubTweak {
     }
 
     private void DrawConfig() {
-        var hasChanged = ImGui.Checkbox("Enable Primary Target", ref TweakConfig.PrimaryTargetEnabled);
-
+        var rebuild = ImGui.Checkbox("Enable Primary Target", ref TweakConfig.PrimaryTargetEnabled);
+        var hasChanged = false;
         if (TweakConfig.PrimaryTargetEnabled) {
             using (ImRaii.PushIndent()) {
                 hasChanged |= DrawCombo(ref TweakConfig.CastbarPosition, "Primary Target");
@@ -66,7 +67,7 @@ public unsafe class TargetCastbarCountdown : UiAdjustments.SubTweak {
             }
         }
         
-        hasChanged |= ImGui.Checkbox("Enable Focus Target", ref TweakConfig.FocusTargetEnabled);
+        rebuild |= ImGui.Checkbox("Enable Focus Target", ref TweakConfig.FocusTargetEnabled);
         
         if (TweakConfig.FocusTargetEnabled) {
             using (ImRaii.PushIndent()) {
@@ -78,9 +79,8 @@ public unsafe class TargetCastbarCountdown : UiAdjustments.SubTweak {
             }
         }
 
-        if (hasChanged) {
-            SaveConfig(TweakConfig);
-        }
+        if (hasChanged || rebuild) SaveConfig(TweakConfig);
+        if (rebuild) FreeAllNodes();
     }
 
     private bool DrawCombo(ref NodePosition setting, string label) {
@@ -111,15 +111,15 @@ public unsafe class TargetCastbarCountdown : UiAdjustments.SubTweak {
         var addon = (AtkUnitBase*) args.Addon;
 
         switch (args.AddonName) {
-            case "_TargetInfoCastBar" when addon->IsVisible:
+            case "_TargetInfoCastBar" when addon->IsVisible && TweakConfig.PrimaryTargetEnabled:
                 UpdateAddon(addon, 7, 2, Service.Targets.Target);
                 break;
 
-            case "_TargetInfo" when addon->IsVisible:
+            case "_TargetInfo" when addon->IsVisible && TweakConfig.PrimaryTargetEnabled:
                 UpdateAddon(addon, 15, 10, Service.Targets.Target);
                 break;
 
-            case "_FocusTargetInfo" when addon->IsVisible:
+            case "_FocusTargetInfo" when addon->IsVisible && TweakConfig.FocusTargetEnabled:
                 UpdateAddon(addon, 8, 3, Service.Targets.FocusTarget, true);
                 break;
         }
