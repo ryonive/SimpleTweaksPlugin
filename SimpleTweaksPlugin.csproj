@@ -33,7 +33,6 @@
         <Compile Remove="Tweaks\CharaCardCommand.cs"/>
         <Compile Remove="Tweaks\CharacterClassSwitcher.cs"/>
         <Compile Remove="Tweaks\CharaViewIncreasedZoom.cs"/>
-        <Compile Remove="Tweaks\ChatTweaks.cs"/>
         <Compile Remove="Tweaks\ChrDirCommand.cs"/>
         <Compile Remove="Tweaks\CombatMovementControl.cs"/>
         <Compile Remove="Tweaks\CommandAlias.cs"/>
@@ -43,7 +42,6 @@
         <Compile Remove="Tweaks\DisableClickTargeting.cs"/>
         <Compile Remove="Tweaks\DisableMountVolumeChange.cs"/>
         <Compile Remove="Tweaks\DisableMouseCameraControl.cs"/>
-        <Compile Remove="Tweaks\DisableTitleScreenMovie.cs"/>
         <Compile Remove="Tweaks\DutyTimer.cs"/>
         <Compile Remove="Tweaks\EmoteLogServerBarEntry.cs"/>
         <Compile Remove="Tweaks\EmoteLogSubcommand.cs"/>
@@ -85,11 +83,9 @@
         <Compile Remove="Tweaks\TooltipTweaks.cs"/>
         <Compile Remove="Tweaks\TreasureHuntTargets.cs"/>
         <Compile Remove="Tweaks\TryOnCorrectItem.cs"/>
-        <Compile Remove="Tweaks\UiAdjustments.cs"/>
         <Compile Remove="Tweaks\UseCollectionCommand.cs"/>
         <Compile Remove="Tweaks\Chat\ChatNameColours.cs"/>
         <Compile Remove="Tweaks\Chat\ChatSoundsEverywhere.cs"/>
-        <Compile Remove="Tweaks\Chat\ClickableLinks.cs"/>
         <Compile Remove="Tweaks\Chat\CustomTimestampFormat.cs"/>
         <Compile Remove="Tweaks\Chat\DisableAutoChatInputs.cs"/>
         <Compile Remove="Tweaks\Chat\DisableChatAutoscroll.cs"/>
@@ -135,7 +131,6 @@
         <Compile Remove="Tweaks\UiAdjustment\AlwaysYes.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\AutoFocusRecipeSearch.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\BattleTalkAdjustments.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\CastBarAdjustments.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\CastingTextVisibility.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\ChangeMapAreaColors.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\ColoredDutyRoulette.cs"/>
@@ -190,7 +185,6 @@
         <Compile Remove="Tweaks\UiAdjustment\SmartNameplates.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\SubmarineDestinationLetters.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\TargetCastbarCountdown.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\TargetHP.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\TimerOnDutyWaiting.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\TimeUntilGpMax.cs"/>
     </ItemGroup>
