@@ -8,7 +8,6 @@ using System.Reflection;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.Internal;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Plugin;
 using ImGuiNET;
@@ -20,8 +19,11 @@ using SimpleTweaksPlugin.Utility;
 namespace SimpleTweaksPlugin.TweakSystem; 
 
 public abstract class BaseTweak {
+    protected BaseTweak() { }
+    internal BaseTweak(string name) => tweakNameAttribute = new TweakNameAttribute(name);
+
     protected SimpleTweaksPlugin Plugin;
-    protected DalamudPluginInterface PluginInterface;
+    protected IDalamudPluginInterface PluginInterface;
     protected SimpleTweaksPluginConfig PluginConfig;
 
     public virtual bool Ready { get; protected set; }
@@ -29,20 +31,19 @@ public abstract class BaseTweak {
     protected virtual bool Unloading { get; private set; } = true;
 
     private bool hasPreviewImage;
-    private IDalamudTextureWrap previewImage;
     
     public bool IsDisposed { get; private set; }
 
     public virtual string Key => GetType().Name;
 
-    public virtual string Name => TweakNameAttribute?.Name ?? GetType().Name;
+    public string Name => TweakNameAttribute?.Name ?? GetType().Name;
 
-    public virtual uint Version => TweakVersionAttribute?.Version ?? 1;
+    public uint Version => TweakVersionAttribute?.Version ?? 1;
 
     public string LocalizedName => LocString("Name", Name, "Tweak Name");
 
-    public virtual string Description => TweakDescriptionAttribute?.Description;
-    protected virtual string Author => TweakAuthorAttribute?.Author;
+    public string Description => TweakDescriptionAttribute?.Description;
+    protected string Author => TweakAuthorAttribute?.Author;
     public virtual bool Experimental => false;
     public virtual IEnumerable<string> Tags { get; } = new string[0];
     internal bool ForceOpenConfig { private get; set; }
@@ -56,7 +57,7 @@ public abstract class BaseTweak {
 
     protected CultureInfo Culture => Plugin.Culture;
 
-    public void InterfaceSetup(SimpleTweaksPlugin plugin, DalamudPluginInterface pluginInterface, SimpleTweaksPluginConfig config, TweakProvider tweakProvider, SubTweakManager tweakManager = null) {
+    public void InterfaceSetup(SimpleTweaksPlugin plugin, IDalamudPluginInterface pluginInterface, SimpleTweaksPluginConfig config, TweakProvider tweakProvider, SubTweakManager tweakManager = null) {
         this.PluginInterface = pluginInterface;
         this.PluginConfig = config;
         this.Plugin = plugin;
@@ -80,14 +81,16 @@ public abstract class BaseTweak {
             ImGuiExt.IconButton($"##previewButton", FontAwesomeIcon.Image);
             if (ImGui.IsItemHovered()) {
                 ImGui.BeginTooltip();
-                if (previewImage == null) {
-                    try {
-                        previewImage = PluginInterface.UiBuilder.LoadImage(Path.Join(PluginInterface.AssemblyLocation.DirectoryName, "TweakPreviews", $"{Key}.png"));
-                    } catch {
+                try {
+                    var image = Service.TextureProvider.GetFromFile(Path.Join(PluginInterface.AssemblyLocation.DirectoryName, "TweakPreviews", $"{Key}.png"));
+                    var previewImage = image.GetWrapOrDefault();
+                    if (previewImage == null) {
                         hasPreviewImage = false;
+                    } else {
+                        ImGui.Image(previewImage.ImGuiHandle, new Vector2(previewImage.Width, previewImage.Height));
                     }
-                } else {
-                    ImGui.Image(previewImage.ImGuiHandle, new Vector2(previewImage.Width, previewImage.Height));
+                } catch {
+                    hasPreviewImage = false;
                 }
                 ImGui.EndTooltip();
             }
@@ -611,7 +614,6 @@ public abstract class BaseTweak {
     }
 
     internal void InternalDispose() {
-        previewImage?.Dispose();
         Dispose();
         IsDisposed = true;
     }
