@@ -126,7 +126,6 @@
         <Compile Remove="Tweaks\Tooltips\Hotkeys\ViewOnGarlandTools.cs"/>
         <Compile Remove="Tweaks\Tooltips\Hotkeys\ViewOnTeamcraft.cs"/>
         <Compile Remove="Tweaks\Tooltips\Hotkeys\ViewOnUniversalis.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\AccurateVentureTimes.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\ActionPressMirroring.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\AutoFocusRecipeSearch.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\BattleTalkAdjustments.cs"/>
@@ -141,13 +140,11 @@
         <Compile Remove="Tweaks\UiAdjustment\DutyListBackground.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\ExamineItemLevel.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\ExpandedCurrencyDisplay.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\ExpPercentage.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\ExtendedDesynthesisWindow.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\FadeUnavailableActions.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\FastSearch.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\GearPositions.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\HideAchievementsNotifications.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\HideExperienceBar.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\HideGuildhestObjectivePopup.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\HideHotbarLock.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\HideJobGauge.cs"/>
@@ -188,7 +185,6 @@
         <Compile Remove="Debugging\AgentDebug.cs"/>
         <Compile Remove="Debugging\ArrayDataBrowser.cs"/>
         <Compile Remove="Debugging\BattleCharaDebug.cs"/>
-        <Compile Remove="Debugging\ConfigDebug.cs"/>
         <Compile Remove="Debugging\ExcelSheetDebugging.cs"/>
         <Compile Remove="Debugging\InfoProxyDebugging.cs"/>
         <Compile Remove="Debugging\InventoryDebug.cs"/>
