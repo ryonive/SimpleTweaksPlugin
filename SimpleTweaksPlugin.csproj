@@ -80,9 +80,6 @@
         <Compile Remove="Tweaks\TreasureHuntTargets.cs"/>
         <Compile Remove="Tweaks\TryOnCorrectItem.cs"/>
         <Compile Remove="Tweaks\UseCollectionCommand.cs"/>
-        <Compile Remove="Tweaks\Chat\ChatNameColours.cs"/>
-        <Compile Remove="Tweaks\Chat\ChatSoundsEverywhere.cs"/>
-        <Compile Remove="Tweaks\Chat\CustomTimestampFormat.cs"/>
         <Compile Remove="Tweaks\Chat\DisableAutoChatInputs.cs"/>
         <Compile Remove="Tweaks\Chat\DisableChatAutoscroll.cs"/>
         <Compile Remove="Tweaks\Chat\DisableChatMovement.cs"/>
@@ -98,8 +95,6 @@
         <Compile Remove="Tweaks\Chat\StickyShoutChat.cs"/>
         <Compile Remove="Tweaks\Chat\ZoomedChatCustomization.cs"/>
         <Compile Remove="Tweaks\JokeTweak\Fools2023.cs"/>
-        <Compile Remove="Tweaks\Tooltips\HideTooltipsInCombat.cs"/>
-        <Compile Remove="Tweaks\Tooltips\TrackGachaItems.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\BattleTalkAdjustments.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\CastingTextVisibility.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\ChangeMapAreaColors.cs"/>
