@@ -80,15 +80,12 @@
         <Compile Remove="Tweaks\TreasureHuntTargets.cs"/>
         <Compile Remove="Tweaks\TryOnCorrectItem.cs"/>
         <Compile Remove="Tweaks\UseCollectionCommand.cs"/>
-        <Compile Remove="Tweaks\Chat\DisableChatMovement.cs"/>
         <Compile Remove="Tweaks\Chat\EchoPartyFinder.cs"/>
         <Compile Remove="Tweaks\Chat\EchoStorySelection.cs"/>
         <Compile Remove="Tweaks\Chat\HideChat.cs"/>
         <Compile Remove="Tweaks\Chat\HideChatAuto.cs"/>
-        <Compile Remove="Tweaks\Chat\HideChatPanelButtons.cs"/>
         <Compile Remove="Tweaks\Chat\ImprovedFontSizes.cs"/>
         <Compile Remove="Tweaks\Chat\RenameChatTabs.cs"/>
-        <Compile Remove="Tweaks\Chat\ReplyChannelSwitch.cs"/>
         <Compile Remove="Tweaks\Chat\StickyChat.cs"/>
         <Compile Remove="Tweaks\Chat\StickyShoutChat.cs"/>
         <Compile Remove="Tweaks\Chat\ZoomedChatCustomization.cs"/>
