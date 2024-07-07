@@ -99,7 +99,6 @@
         <Compile Remove="Tweaks\Chat\ZoomedChatCustomization.cs"/>
         <Compile Remove="Tweaks\JokeTweak\Fools2023.cs"/>
         <Compile Remove="Tweaks\Tooltips\HideTooltipsInCombat.cs"/>
-        <Compile Remove="Tweaks\Tooltips\TrackFadedRolls.cs"/>
         <Compile Remove="Tweaks\Tooltips\TrackGachaItems.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\BattleTalkAdjustments.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\CastingTextVisibility.cs"/>
@@ -183,6 +182,10 @@
 		<Reference Include="FFXIVClientStructs">
 			<Private>false</Private>
 			<HintPath>$(DalamudLibPath)\FFXIVClientStructs.dll</HintPath>
+		</Reference>
+		<Reference Include="InteropGenerator.Runtime">
+			<Private>false</Private>
+			<HintPath>$(DalamudLibPath)\InteropGenerator.Runtime.dll</HintPath>
 		</Reference>
         <Reference Include="Newtonsoft.Json">
             <Private>false</Private>
