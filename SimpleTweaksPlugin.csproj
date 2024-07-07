@@ -34,7 +34,6 @@
         <Compile Remove="Tweaks\CharaViewIncreasedZoom.cs"/>
         <Compile Remove="Tweaks\ChrDirCommand.cs"/>
         <Compile Remove="Tweaks\CombatMovementControl.cs"/>
-        <Compile Remove="Tweaks\CommandAlias.cs"/>
         <Compile Remove="Tweaks\ContentsFinderConfirmClassSwitch.cs"/>
         <Compile Remove="Tweaks\CutsceneCommands.cs"/>
         <Compile Remove="Tweaks\DataCentreOnTitleScreen.cs"/>
@@ -47,9 +46,7 @@
         <Compile Remove="Tweaks\EquipJobCommand.cs"/>
         <Compile Remove="Tweaks\EstateListCommand.cs"/>
         <Compile Remove="Tweaks\ExitGame.cs"/>
-        <Compile Remove="Tweaks\ExtendedMacroIcon.cs"/>
         <Compile Remove="Tweaks\FixedShadowDistance.cs"/>
-        <Compile Remove="Tweaks\FixTarget.cs"/>
         <Compile Remove="Tweaks\FurnitureClocksCustomTime.cs"/>
         <Compile Remove="Tweaks\GearsetSaveCurrent.cs"/>
         <Compile Remove="Tweaks\HideMouseAfterInactivity.cs"/>
@@ -62,7 +59,6 @@
         <Compile Remove="Tweaks\LongVeil.cs"/>
         <Compile Remove="Tweaks\MainCommandCommand.cs"/>
         <Compile Remove="Tweaks\MinionAway.cs"/>
-        <Compile Remove="Tweaks\NoCharacterNotFoundWarning.cs"/>
         <Compile Remove="Tweaks\PidCommand.cs"/>
         <Compile Remove="Tweaks\QuickSellItems.cs"/>
         <Compile Remove="Tweaks\RecommendEquipCommand.cs"/>
@@ -87,7 +83,6 @@
         <Compile Remove="Tweaks\Chat\ImprovedFontSizes.cs"/>
         <Compile Remove="Tweaks\Chat\RenameChatTabs.cs"/>
         <Compile Remove="Tweaks\Chat\StickyChat.cs"/>
-        <Compile Remove="Tweaks\Chat\StickyShoutChat.cs"/>
         <Compile Remove="Tweaks\Chat\ZoomedChatCustomization.cs"/>
         <Compile Remove="Tweaks\JokeTweak\Fools2023.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\BattleTalkAdjustments.cs"/>
@@ -133,6 +128,7 @@
         <Compile Remove="Tweaks\UiAdjustment\SubmarineDestinationLetters.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\TargetCastbarCountdown.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\TimerOnDutyWaiting.cs"/>
+        <Compile Remove="Tweaks\NoCharacterNotFoundWarning.cs"/>
     </ItemGroup>
     
     <ItemGroup>
