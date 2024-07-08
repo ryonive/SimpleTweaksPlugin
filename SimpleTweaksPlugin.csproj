@@ -33,7 +33,6 @@
         <Compile Remove="Tweaks\CharacterClassSwitcher.cs"/>
         <Compile Remove="Tweaks\CharaViewIncreasedZoom.cs"/>
         <Compile Remove="Tweaks\ChrDirCommand.cs"/>
-        <Compile Remove="Tweaks\CombatMovementControl.cs"/>
         <Compile Remove="Tweaks\ContentsFinderConfirmClassSwitch.cs"/>
         <Compile Remove="Tweaks\CutsceneCommands.cs"/>
         <Compile Remove="Tweaks\DataCentreOnTitleScreen.cs"/>
@@ -129,6 +128,7 @@
         <Compile Remove="Tweaks\UiAdjustment\TargetCastbarCountdown.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\TimerOnDutyWaiting.cs"/>
         <Compile Remove="Tweaks\NoCharacterNotFoundWarning.cs"/>
+        <Compile Remove="Tweaks\UiAdjustment\AddNumberSeparators.cs" />
     </ItemGroup>
     
     <ItemGroup>
