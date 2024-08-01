@@ -37,7 +37,6 @@
         <Compile Remove="Tweaks\EquipFromHotbar.cs"/>
         <Compile Remove="Tweaks\FixedShadowDistance.cs"/>
         <Compile Remove="Tweaks\FurnitureClocksCustomTime.cs"/>
-        <Compile Remove="Tweaks\GearsetSaveCurrent.cs"/>
         <Compile Remove="Tweaks\HouseLightCommand.cs"/>
         <Compile Remove="Tweaks\JokeTweaks.cs"/>
         <Compile Remove="Tweaks\KeyInterrupt.cs"/>
@@ -50,10 +49,8 @@
         <Compile Remove="Tweaks\RefreshMarketPrices.cs"/>
         <Compile Remove="Tweaks\RememberQuickGathering.cs"/>
         <Compile Remove="Tweaks\RememberSelectedWorld.cs"/>
-        <Compile Remove="Tweaks\RemoveClientLimit.cs"/>
         <Compile Remove="Tweaks\SanctuarySprintReplacer.cs"/>
         <Compile Remove="Tweaks\ScreenshotFileName.cs"/>
-        <Compile Remove="Tweaks\SetOptionCommand.cs"/>
         <Compile Remove="Tweaks\TreasureHuntTargets.cs"/>
         <Compile Remove="Tweaks\TryOnCorrectItem.cs"/>
         <Compile Remove="Tweaks\Chat\HideChat.cs"/>
@@ -70,7 +67,6 @@
         <Compile Remove="Tweaks\UiAdjustment\ExpandedCurrencyDisplay.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\FadeUnavailableActions.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\FastSearch.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\HideAchievementsNotifications.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\HideGuildhestObjectivePopup.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\HideQualityWhenNoHQ.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\ImprovedWorldVisit.cs"/>
@@ -84,7 +80,6 @@
         <Compile Remove="Tweaks\UiAdjustment\SubmarineDestinationLetters.cs"/>
         <Compile Remove="Tweaks\NoCharacterNotFoundWarning.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\AddNumberSeparators.cs" />
-        <Compile Remove="Tweaks\UiAdjustment\LootWindowDuplicateUniqueItemIndicator.cs" />
     </ItemGroup>
     
     <ItemGroup>
