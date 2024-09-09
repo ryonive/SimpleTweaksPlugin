@@ -18,7 +18,7 @@
     </PropertyGroup>
     <PropertyGroup Label="Feature">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <Version>1.10.0.7</Version>
+        <Version>1.10.1.0</Version>
     </PropertyGroup>
 	<PropertyGroup>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -38,10 +38,7 @@
         <Compile Remove="Tweaks\ScreenshotFileName.cs"/>
         <Compile Remove="Tweaks\Chat\ZoomedChatCustomization.cs"/>
         <Compile Remove="Tweaks\JokeTweak\Fools2023.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\ChangeMapAreaColors.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\FastSearch.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\HideGuildhestObjectivePopup.cs"/>
-        <Compile Remove="Tweaks\UiAdjustment\HideQualityWhenNoHQ.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\NamePlateIconSpacing.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\SmartNameplates.cs"/>
         <Compile Remove="Tweaks\UiAdjustment\SubmarineDestinationLetters.cs"/>
